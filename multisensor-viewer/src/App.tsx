@@ -23,6 +23,8 @@ import { LidarViewer } from "@components/three/LidarViewer";
 import { SimulationPanel } from "@components/ui/SimulationPanel";
 import { QualityBanner } from "@components/ui/QualityBanner";
 
+const DEBUG_MODE = import.meta.env.VITE_DEBUG_MODE === "true";
+
 export default function App() {
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [selectedScene, setSelectedScene] = useState<Scene | null>(null);
@@ -86,6 +88,7 @@ export default function App() {
         setSampleData(d);
         const lidar = d.sensors?.LIDAR_TOP;
         if (lidar?.filename) {
+          console.log('lidar', lidar.filename )
           fetch(`${API}/data/${lidar.filename}`)
             .then((r) => r.arrayBuffer())
             .then((buf) => parsePCDBin(buf).then(setLidarPoints))
@@ -143,8 +146,8 @@ export default function App() {
             ? `FRAME · ${selectedSample.token}`
             : "Select a scene to begin"}
         </span>
-        {/* NEW: overall quality badge in header when a frame is loaded */}
-        {quality && (
+        {/* NEW: overall quality badge in header when a frame is loaded — debug mode only */}
+        {DEBUG_MODE && quality && (
           <span className={`text-[10px] font-bold tracking-widest px-2.5 py-1 rounded-sm border font-mono ${QUALITY_STYLE[quality.overall_status].badge}`}>
             {quality.overall_status}
           </span>
@@ -187,17 +190,19 @@ export default function App() {
               </button>
             ))
           )}
-          {/* SIMULATION PANEL — bottom of right sidebar */}
-          <div className="mt-auto border-t border-[#1c2532] p-3 shrink-0">
-            <SimulationPanel
-              availableSensors={Object.keys(sensors)}
-              mockState={mockSensor || mockDropAnns
-                ? { drop_sensor: mockSensor, drop_annotations: mockDropAnns }
-                : null
-              }
-              onSimulate={handleSimulate}
-            />
-          </div>
+          {/* SIMULATION PANEL — bottom of right sidebar (debug mode only) */}
+          {DEBUG_MODE && (
+            <div className="mt-auto border-t border-[#1c2532] p-3 shrink-0">
+              <SimulationPanel
+                availableSensors={Object.keys(sensors)}
+                mockState={mockSensor || mockDropAnns
+                  ? { drop_sensor: mockSensor, drop_annotations: mockDropAnns }
+                  : null
+                }
+                onSimulate={handleSimulate}
+              />
+            </div>
+          )}
         </aside>
 
         {/* CENTER — tabs + content */}

@@ -1,12 +1,12 @@
-# LiangDao Assessment
+# Multi-Sensor Viewer: Autonomous Driving Data Visualization
 
-# Technical Proof for Senior Web Application Developer – NuScenes API & Multi-Sensor Viewer
+A comprehensive research exploration into real-time 3D sensor data visualization using React, Three.js, and react-three-fiber with the open-source nuScenes dataset.
 
 ## Overview
 
-This repository contains a comprehensive technical assessment demonstrating autonomous driving data visualization and API integration. The project combines a **React + Three-three-fiber frontend** for interactive sensor data exploration served by a **FastAPI backend** providing the nuScenes dataset.
+This project demonstrates an advanced full-stack application for interactive autonomous driving sensor data exploration. It combines a **React + react-three-fiber frontend** for real-time 3D visualization with a **FastAPI backend** serving the nuScenes dataset.
 
-The implementation focuses on web computer graphics, clean architecture, type safety, scalability, and seamless integration between backend and frontend components.
+The implementation showcases best practices in web computer graphics, clean architecture, type safety, scalability, and seamless frontend-backend integration—serving as a practical learning platform for visual computing with Three.js and React Three Fiber.
 
 ## Author
 
@@ -27,12 +27,6 @@ The implementation focuses on web computer graphics, clean architecture, type sa
 - **FastAPI** - Modern async Python web framework
 - **Uvicorn** - ASGI server
 - **nuScenes-devkit** - Official dataset SDK
-
----
-
-### Architecture Decisions: Python Backend Over Node.js
-
-- **Python Backend Over Node.js**: While I have extensive experience with Node.js and JavaScript ecosystems, I deliberately chose **Python with FastAPI** for the backend. This decision reflects architectural pragmatism: the nuScenes dataset and its official SDK are built entirely in Python, making native integration a natural choice. This approach eliminates unnecessary abstraction layers.
 
 ---
 
@@ -74,8 +68,8 @@ Before starting, ensure you have installed:
 ### Project Structure
 
 ```
-LiangDao-Assessment/
-├── nuscenes-api/                 # Backend
+multisensor-lidar-viewer/
+├── nuscenes-api/                 # Backend - REST API Layer
 │   ├── main.py                   # FastAPI application
 │   ├── config.py                 # Configuration and settings
 │   ├── database.py               # nuScenes SDK initialization
@@ -86,16 +80,16 @@ LiangDao-Assessment/
 │   │   ├── sensor_data.py       # Sensor data endpoints
 │   │   └── quality.py           # Data quality inspection
 │   └── data/
-│       └── nuscenes/            # ← Dataset goes here
+│       └── nuscenes/            # ← nuScenes dataset location
 │
-└── multisensor-viewer/           # Frontend
+└── multisensor-viewer/           # Frontend - 3D Visualization
     ├── src/
     │   ├── components/
-    │   │   ├── three/           # 3D renderer components
+    │   │   ├── three/           # Three.js & R3F components
     │   │   │   ├── LidarViewer.tsx
     │   │   │   ├── PointCloud.tsx
     │   │   │   └── AnnotationBoxes.tsx
-    │   │   └── ui/              # UI components
+    │   │   └── ui/              # React UI components
     │   │       ├── SimulationPanel.tsx
     │   │       ├── Timeline.tsx
     │   │       └── SensorChip.tsx
@@ -116,7 +110,7 @@ LiangDao-Assessment/
 1. **Install Python dependencies:**
    ```bash
    cd nuscenes-api
-   python -m venv venv
+   python3 -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    pip install -r requirements.txt
    ```
@@ -139,91 +133,114 @@ LiangDao-Assessment/
 
 2. **Start development server:**
    ```bash
-   pnpm run dev
+   pnpm dev
    ```
    - Application will be available at `http://localhost:5173` (default Vite port)
    - Hot module reloading enabled for development
 
-3. **Build for production:**
+3. **Debug Mode - Research & Testing**:
+   Enable debug mode to access quality metrics and sensor degradation simulation:
    ```bash
-   pnpm run build
+   pnpm dev:debug
+   ```
+   - Displays quality status badge in the header
+   - Enables SimulationPanel for testing data edge cases
+   - Visualize missing annotations and sensor data gaps
+   - Useful for exploring dataset limitations and quality scenarios
+
+4. **Build for production:**
+   ```bash
+   pnpm build
    ```
    - Production build output goes to `dist/`
 
----
+
 
 ## What I've Developed
 
 ### Backend - NuScenes API Service
 
-1. **RESTful API Endpoints** - Complete operations for:
-   - Scenes: List all driving scenes, retrieve scene metadata
-   - Samples/Frames: Get frame data with associated sensor information
-   - Sensor Data: Stream LIDAR point clouds, camera images, RADAR data
+1. **RESTful API Endpoints**:
+   - Scene management: List and retrieve comprehensive scene metadata
+   - Frame/Sample access: Get frame data with associated multi-sensor information
+   - Sensor data streaming: LIDAR point clouds, multi-camera imagery, RADAR data
 
-2. **Data Quality Inspection**:
-   - Validation of sample data integrity
-   - Detection of potential issues in dataset structure (timestamp inconsistencies, or missed sensor or annotations data) or with the general use of SDK.
+2. **Data Integrity & Quality Analysis**:
+   - Comprehensive validation of sample data structure and completeness
+   - Detection of temporal inconsistencies and missing sensor annotations
+   - Dataset anomaly detection for research and debugging
 
-3. **Mocked invalid requests**:    
-   - Handling for API robustness simulating cases of lack of annotations or sensor data
+3. **Robust Error Handling**:    
+   - Edge case handling for missing or incomplete sensor data
+   - Graceful API error responses for client-side consumption
 
 ### Frontend - Multi-Sensor Viewer
 
 1. **3D Point Cloud Visualization**:
-   - LIDAR point cloud rendering using Three.js and react-three/fiber
-   - Interactive navigation with OrbitControls
-   - Efficient rendering of high-density point data
+   - LIDAR point cloud rendering optimized for high-density data
+   - Interactive camera controls with smooth navigation (OrbitControls)
+   - GPU-accelerated rendering using Three.js
 
-3. **Simulation Panel**:
-   - Scene and sample selection interface
-   - Metadata display and scene information
-   - Integration with backend API for dynamic data loading
+2. **Multi-Camera Integration**:
+   - Synchronized display of multiple camera feeds
+   - Sensor selection interface for switching between data streams
 
-3. **Multi-Sensor Panel**:
-   - Interactive sensor chip display showing available data types
-   - Quality indicators for each sensor
+3. **Scene Navigation & Control**:
+   - Interactive scene and frame selection with metadata
+   - Real-time API integration for dynamic data loading
 
-4. **Timeline Navigation**: 
-   - Frame-by-frame playback of scene sequences
+4. **Sensor Data Monitoring**:
+   - Interactive sensor status indicators
+   - Data availability and quality metrics per sensor
 
-5. **Annotation Visualization**:
-   - 3D bounding boxes for detected objects
-   - Annotation rendering in world space aligned with point cloud
+5. **Temporal Playback & Navigation**: 
+   - Frame-by-frame sequence playback through driving scenes
+   - Timeline controls for exploration
 
-6. **Simulation Degraded Data Panel**:
-   - Options to drop annotations or radar data and how to display the errors to the user.
+6. **3D Annotation Rendering**:
+   - Bounding box visualization for detected objects
+   - World-space coordinate alignment with point cloud data
 
-7. **Type-Safe Implementation**:
-   - Full TypeScript coverage with strict mode
-   - Code quality validation with Eslint and Prettier
+7. **Data Quality Visualization**:
+   - Interactive exploration of sensor degradation scenarios
+   - Visual feedback for missing annotations or data gaps
+   - Research-focused tools for understanding dataset limitations
+
+8. **Production Code Quality**:
+   - Full TypeScript with strict mode enabled
+   - ESLint + Prettier for consistent code standards
+   - Modular, extensible component architecture
 
 ---
 
 ## Development Notes
 
-- **Communication**: Backend runs on port 8000, frontend on 5173
-- **3D Rendering**: All 3D operations are GPU-accelerated using Three.js
-- **State Management**: React hooks for clean, functional component architecture
-- **AI-assisted development**: Claude, NotebookLM and GitHub Copilot were used to summarize documentation of Python and nuScenes and accelerate implementation.
-- **Invalid Data in Frontend**: Simulated panel in frontend app is rendered in frontend due to assessment requirements. It would not be rendered in production for real customers.
+- **Architecture**: Backend API on port 8000, frontend dev server on 5173
+- **Rendering Pipeline**: GPU-accelerated graphics using Three.js and WebGL
+- **State Management**: React hooks for functional, side-effect-driven component architecture
+- **Development Tools**: IDE support and scaffolding with Vite, TypeScript, ESLint, and Prettier
+- **Data Source**: Open-source nuScenes dataset (v1.0-mini for development/research)
+- **Data Quality Exploration**: Educational visualization of edge cases, missing data, and sensor anomalies
 
 ---
 
-## What I Would Add With More Time
+## Future Enhancements
 
-- Unit and integration tests (@react-three/test-renderer)
-- Customized visualization of radar sensor showing PCD data 
-- Advanced interaction in LiDAR Panel: Click on Boxes and set as selected in Annotations panel.
-- Optimize TailwindCSS classes saving repeated values of colors and margins, among others to variables provided by Tailwind or created as own theme.
+- Unit and integration tests using @react-three/test-renderer
+- Enhanced RADAR visualization with custom point cloud rendering
+- Interactive 3D annotation controls (select boxes, modify attributes)
+- TailwindCSS theme optimization with design tokens
+- Performance profiling and WebGL optimization techniques
+- Advanced camera manipulation and data filtering capabilities
 
 ---
 
-## Notes
+## Design Philosophy
 
-This technical proof prioritizes:
-- **Code clarity** through modular, well-organized components
-- **Type safety** with full TypeScript coverage
-- **Scalability** with extensible backend routers and frontend components
-- **Integration** with seamless frontend-backend communication
-- **Best practices** in both Python (FastAPI) and TypeScript/React ecosystems
+This research project emphasizes:
+
+- **Visual Clarity**: Modular, well-organized component structure
+- **Type Safety**: Full TypeScript coverage with strict compiler options
+- **Extensibility**: Pluggable backend routers and composable React components
+- **Learning Value**: Practical exploration of 3D graphics, sensor fusion concepts, and real-time data visualization
+- **Modern Best Practices**: Contemporary patterns in Python (FastAPI), TypeScript, and React ecosystems

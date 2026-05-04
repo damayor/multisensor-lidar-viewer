@@ -15,7 +15,8 @@ export const PointCloud: FC<PointCloudProps> = ({ points }) => {
     const pos = new Float32Array(points.length * 3);
     const col = new Float32Array(points.length * 3);
     const c = new THREE.Color();
-    //Wooow! Seems like C++
+
+    console.log('points, ', points.length); //TODO
     points.forEach((p, i) => {
       // console.log(`point pos ${i} [ ${p.x} ,${p.y} , ${p.z} ] ` )
       pos[i * 3] = p.x;
