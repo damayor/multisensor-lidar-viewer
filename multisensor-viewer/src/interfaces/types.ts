@@ -67,11 +67,41 @@ export interface Point3D {
   z: number;
 }
 
-export type ActiveTab = "cameras" | "lidar";
+export type ActiveTab = "cameras" | "lidar" | "sensors";
 
 export interface TransformData {
   egoTranslation: [number, number, number];
   sensorTranslation: [number, number, number];
+}
+
+export interface RadarSensorData {
+  token: string;
+  sample_token: string;
+  channel: string;
+  filename: string;
+  fileformat: string;
+  timestamp: number;
+  is_key_frame: boolean;
+  width?: number;
+  height?: number;
+  prev: string;
+  next: string;
+  sensor: {
+    token: string;
+    channel: string;
+    modality: string;
+  };
+  calibration: {
+    translation: [number, number, number];
+    rotation: [number, number, number, number];
+    camera_intrinsic: number[];
+  };
+  ego_pose: {
+    token: string;
+    timestamp: number;
+    translation: [number, number, number];
+    rotation: [number, number, number, number];
+  };
 }
 
 export type QualityStatus = "PASS" | "WARNING" | "FAIL";

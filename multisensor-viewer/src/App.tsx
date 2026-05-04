@@ -20,6 +20,7 @@ import { parsePCDBin } from "./utils/pcdParser";
 import { SensorChip } from "@components/ui/SensorChip";
 import { Timeline } from "@components/ui/Timeline";
 import { LidarViewer } from "@components/three/LidarViewer";
+import { RadarViewer } from "@components/three/RadarViewer";
 import { SimulationPanel } from "@components/ui/SimulationPanel";
 import { QualityBanner } from "@components/ui/QualityBanner";
 
@@ -161,7 +162,7 @@ export default function App() {
       {/* ── BODY (sidebar + content + annotations) ── */}
       <div className="flex flex-1 overflow-hidden">
         {/* LEFT SIDEBAR — only scenes now */}
-        <aside className="w-64 bg-[#0d1117] border-r border-[#1c2532] flex flex-col overflow-y-auto shrink-0">
+        <aside className="w-50 bg-[#0d1117] border-r border-[#1c2532] flex flex-col overflow-y-auto shrink-0">
           <div className="px-4 py-3 text-[10px] font-bold tracking-[2px] text-[#636e7b] uppercase border-b border-[#1c2532]">
             Scenes
           </div>
@@ -234,7 +235,7 @@ export default function App() {
 
               {/* Tab bar */}
               <div className="flex border-b border-[#1c2532] bg-[#0d1117] px-4 shrink-0">
-                {(["cameras", "lidar"] as ActiveTab[]).map((t) => (
+                {(["cameras", "lidar", "sensors"] as ActiveTab[]).map((t) => (
                   <button
                     key={t}
                     onClick={() => setActiveTab(t)}
@@ -247,7 +248,7 @@ export default function App() {
                       }
                     `}
                   >
-                    {t === "cameras" ? "📷 Cameras" : "🔵 LiDAR + Boxes"}
+                    {t === "cameras" ? "📷 Cameras" : t === "lidar" ? "🔵 LiDAR + Boxes" : "📡 Sensors"}
                   </button>
                 ))}
               </div>
@@ -255,7 +256,7 @@ export default function App() {
               {/* Main Tab content */}
               <div className="flex-1 overflow-auto">
                 {activeTab === "cameras" && (
-                  <div className="grid grid-cols-3 gap-0.5 p-0.5 bg-[#1c2532]">
+                  <div className="grid grid-cols-3 sm:grid-cols-2 gap-0.5 p-0.5 bg-[#1c2532]">
                     {CAMERA_CHANNELS.map((ch: CameraChannel) => {
                       const s = sensors[ch];
                       return (
@@ -293,6 +294,12 @@ export default function App() {
                     quality={quality}                  
                   />
                 )}
+
+                {activeTab === "sensors" && (
+                  <RadarViewer
+                    sensors={sensors}
+                  />
+                )}
               </div>
             </>
           )}
@@ -306,7 +313,7 @@ export default function App() {
         </main>
 
         {/* RIGHT SIDEBAR — annotations */}
-        <aside className="w-72 bg-[#0d1117] border-l border-[#1c2532] flex flex-col overflow-y-auto shrink-0">
+        <aside className="w-56 bg-[#0d1117] border-l border-[#1c2532] flex flex-col overflow-y-auto shrink-0">
           <div className="flex items-baseline gap-2 px-4 py-3 border-b border-[#1c2532] shrink-0">
             <span className="font-['Montserrat'] font-semibold text-[13px] text-white">
               Annotations

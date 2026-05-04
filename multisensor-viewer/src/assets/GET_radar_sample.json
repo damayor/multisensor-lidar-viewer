@@ -1,0 +1,47 @@
+{
+    "token": "e7651a98e5c44fa3b5c33f008e2ab853",
+    "sample_token": "0307afa1ec7e48ce90295acabf8cb6dd",
+    "channel": "RADAR_FRONT",
+    "filename": "samples/RADAR_FRONT/n008-2018-08-30-15-16-55-0400__RADAR_FRONT__1535657113664093.pcd",
+    "fileformat": "pcd",
+    "timestamp": 1535657113664093,
+    "is_key_frame": true,
+    "width": 0,
+    "height": 0,
+    "prev": "2f1b49d4ea844f69b96c5e927fb216f9",
+    "next": "adc79b096d114ab484f546f3f22aa61e",
+    "sensor": {
+        "token": "47fcd48f71d75e0da5c8c1704a9bfe0a",
+        "channel": "RADAR_FRONT",
+        "modality": "radar"
+    },
+    "calibration": {
+        "translation": [
+            3.412,
+            0.0,
+            0.5
+        ],
+        "rotation": [
+            0.9999974259839071,
+            0.0,
+            0.0,
+            -0.0022689260808398757
+        ],
+        "camera_intrinsic": []
+    },
+    "ego_pose": {
+        "token": "e7651a98e5c44fa3b5c33f008e2ab853",
+        "timestamp": 1535657113664093,
+        "translation": [
+            313.69165895756805,
+            666.5333330441097,
+            0.0
+        ],
+        "rotation": [
+            -0.2042876044384316,
+            0.014021209916882833,
+            -0.01175839211704769,
+            -0.9787398635797434
+        ]
+    }
+}
